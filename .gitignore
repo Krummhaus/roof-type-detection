@@ -1,0 +1,7 @@
+# Ignore all folders starting with a dot
+.*/*
+
+# Ignore the roofs folder
+roofs/
+
+__pycache__/
