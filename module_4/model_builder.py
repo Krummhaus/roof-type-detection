@@ -5,6 +5,7 @@ import torchvision.models as models
 class ReplikaBUYU(nn.Module):
     def __init__(self, OUT_FEAT) -> None:
         super().__init__()
+        self.OUT_FEAT = OUT_FEAT
 
         self.conv_block_1 = nn.Sequential(
             nn.Conv2d(in_channels=3,
@@ -47,7 +48,7 @@ class ReplikaBUYU(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(128, 256),
             nn.ReLU(),
-            nn.Linear(256, OUT_FEAT)#,
+            nn.Linear(256, self.OUT_FEAT)#,
             #nn.Softmax()
         )
 
