@@ -5,6 +5,7 @@
 roofs/
 clip4/
 runs/
+plots/
 __pycache__/
 
 # Ignore files

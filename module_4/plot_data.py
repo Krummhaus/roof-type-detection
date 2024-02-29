@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot_matrix(classes, matrix, model_name, all_acc, class_acc, setup):
+def plot_matrix(classes, matrix, model_name, all_acc, class_acc, setup, timestamp):
     # Plot the confusion matrix with annotations
     accuracy_values = class_acc.numpy()
     plt.figure(figsize=(10, 6))
@@ -38,11 +38,11 @@ def plot_matrix(classes, matrix, model_name, all_acc, class_acc, setup):
     plt.tight_layout()
     # Show the plot
     #plt.show()
-    plt.savefig(f"plot_{model_name}_{setup}_cm.png")
-    print(f"[INFO] Figurew 'plot_{model_name}_{setup}_cm.png' saved.")
+    plt.savefig(f"./plots/plot_{timestamp}_{model_name}_{setup}_cm.png")
+    print(f"[INFO] Figurew 'plot_{timestamp}_{model_name}_{setup}_cm.png' saved.")
 
 
-def plot_acc_n_loss(results, model_name, setup):
+def plot_acc_n_loss(results, model_name, setup, timestamp):
     # Get the loss values of the results dictionary (training and test)
     loss = results['train_loss']
     test_loss = results['test_loss']
@@ -62,7 +62,8 @@ def plot_acc_n_loss(results, model_name, setup):
     plt.plot(epochs, test_loss, 'r-', label='test_loss')
     plt.title('Ztráta')
     plt.xlabel('Počet epoch')
-    plt.xticks(range(len(epochs)))  # Set x-axis ticks to whole integer numbers
+    #plt.xticks(epochs)
+    plt.xticks(range(len(epochs)), [str(epoch) if i % 3 == 0 else '' for i, epoch in enumerate(epochs)])
     plt.grid(True)
     plt.legend()
 
@@ -72,16 +73,17 @@ def plot_acc_n_loss(results, model_name, setup):
     plt.plot(epochs, test_accuracy, 'r-', label='test_accuracy')
     plt.title('Přesnost')
     plt.xlabel('Počet epoch')
-    plt.xticks(epochs)
+    #plt.xticks(epochs)
+    plt.xticks(range(len(epochs)), [str(epoch) if i % 3 == 0 else '' for i, epoch in enumerate(epochs)])
     plt.legend()
 
     plt.grid(True)
-    plt.savefig(f"plot_{model_name}_{setup}_acc.png")
+    plt.savefig(f"./plots/plot_{timestamp}_{model_name}_{setup}_acc.png")
 
-    print(f"[INFO] Figurew 'plot_{model_name}_{setup}_acc.png' saved.")
+    print(f"[INFO] Figurew 'plot_{timestamp}_{model_name}_{setup}_acc.png' saved.")
 
 
-def plot_textinfo(classes, all_acc, class_acc, precision, recall, f1_score, model_name, setup):
+def plot_textinfo(classes, all_acc, class_acc, precision, recall, f1_score, model_name, setup, timestamp):
     # Sample textual data
 
     
@@ -99,6 +101,6 @@ def plot_textinfo(classes, all_acc, class_acc, precision, recall, f1_score, mode
     # Hide axes
     plt.axis('off')
 
-    plt.savefig(f"plot_{model_name}_{setup}_txt.png")
+    plt.savefig(f"./plots/plot_{timestamp}_{model_name}_{setup}_txt.png")
 
-    print(f"[INFO] Figurew 'plot_{model_name}_{setup}_txt.png' saved.")
+    print(f"[INFO] Figurew 'plot_{timestamp}_{model_name}_{setup}_txt.png' saved.")

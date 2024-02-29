@@ -34,6 +34,9 @@ def matrix_and_accuracy(model, test_loader, device, OUT_FEAT, class_names, write
             labels = labels.to(device)
             outputs = model(inputs)
             _, predicted = torch.max(outputs, 1)
+            print(f"INPUT: {inputs.shape}")
+            print(f"LABEL: {labels.shape}")
+            print(f"PREDICTED: {predicted.shape}")
 
             # Update confusion matrix
             for t, p in zip(labels.view(-1), predicted.view(-1)):
@@ -49,14 +52,19 @@ def matrix_and_accuracy(model, test_loader, device, OUT_FEAT, class_names, write
                 class_total[i] += (labels == i).sum().item()
 
             # Save mismatched images to TensorBoard
-            mismatched_indices = (predicted != labels).nonzero()
+            # mismatched_indices = (predicted != labels).nonzero() # catches only first 10 or so mismatches
+            mismatched_indices = []
+            for idx, (p, l) in enumerate(zip(predicted, labels)):
+                if p != l:
+                    mismatched_indices.append(idx)
+            #mismatched_indices = torch.tensor(list(set(mismatched_indices)))
             for idx in mismatched_indices:
                 image = inputs[idx].to(device)
                 true_idx = labels[idx].item()
                 true_label = class_names[true_idx]
                 pred_idx = predicted[idx].item()
                 pred_label = class_names[pred_idx]
-                writer.add_image(f"{model.name}Neshoda/{true_label}_predicted_as_{pred_label}", 
+                writer.add_image(f"Neshoda/{true_label}_predicted_as_{pred_label}", 
                                  torchvision.utils.make_grid(denormalize_inplace(image)))
     
     # convert torch.tensor to np.array

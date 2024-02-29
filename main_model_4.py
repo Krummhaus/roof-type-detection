@@ -41,12 +41,12 @@ def train_vgg16(NUM_EPOCHS=5,
 
     print(f"[RESULT] Celková přesnost: {all_acc}.")
 
-    plot_data.plot_acc_n_loss(results, model.name, setup)
+    plot_data.plot_acc_n_loss(results, model.name, setup, timestamp)
     plot_data.plot_matrix(class_names, cm_np, model.name, all_acc,
-                          class_acc, setup)
+                          class_acc, setup, timestamp)
     plot_data.plot_textinfo(class_names, all_acc, class_acc,
                             precision, recall, f1_score,
-                            model.name, setup)
+                            model.name, setup, timestamp)
 
 
 def train_effnetb1(NUM_EPOCHS=5,
@@ -86,12 +86,12 @@ def train_effnetb1(NUM_EPOCHS=5,
 
     print(f"[RESULT] Celková přesnost: {all_acc}.")
 
-    plot_data.plot_acc_n_loss(results, model.name, setup)
+    plot_data.plot_acc_n_loss(results, model.name, setup, timestamp)
     plot_data.plot_matrix(class_names, cm_np, model.name, all_acc,
-                          class_acc, setup)
+                          class_acc, setup, timestamp)
     plot_data.plot_textinfo(class_names, all_acc, class_acc,
                             precision, recall, f1_score,
-                            model.name, setup)
+                            model.name, setup, timestamp)
 
 
 def train_resnet152(NUM_EPOCHS=5,
@@ -130,12 +130,12 @@ def train_resnet152(NUM_EPOCHS=5,
 
     print(f"[RESULT] Celková přesnost: {all_acc}.")
 
-    plot_data.plot_acc_n_loss(results, model.name, setup)
+    plot_data.plot_acc_n_loss(results, model.name, setup, timestamp)
     plot_data.plot_matrix(class_names, cm_np, model.name, all_acc,
-                          class_acc, setup)
+                          class_acc, setup, timestamp)
     plot_data.plot_textinfo(class_names, all_acc, class_acc,
                             precision, recall, f1_score,
-                            model.name, setup)
+                            model.name, setup, timestamp)
 
 def run_experiment_1():
     drop = [0.0, 0.15]
@@ -163,7 +163,7 @@ if __name__ == '__main__':
     # Until i rename /clip4 folder calasses, I must overide
     class_names = ['Plochá', 'Valbová', 'Sedlová', 'Komplexní']
 
-    train_effnetb1(NUM_EPOCHS=30)
+    train_effnetb1(NUM_EPOCHS=1)
     #train_vgg16()
     #train_resnet152()
     #run_experiment_1()
