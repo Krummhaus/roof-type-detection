@@ -77,7 +77,7 @@ def create_vgg16(device, SEED_NUM, DROP_OUT, OUT_FEAT):
         nn.Linear(in_features=25088,
                 out_features=OUT_FEAT)).to(device)
     
-    model.name = "vgg_16"
+    model.name = "VGG_16"
     print(f"[INFO] Created new {model.name} model.")
     
     return model
@@ -99,7 +99,29 @@ def create_effnetb1(device, SEED_NUM, DROP_OUT, OUT_FEAT):
         nn.Linear(in_features=1280,
                 out_features=OUT_FEAT)).to(device)
 
-    model.name = "effnet_b1"
+    model.name = "EfficientNet_b1"
+    print(f"[INFO] Created new {model.name} model.")
+
+    return model
+
+
+def create_resnet152(device, SEED_NUM, DROP_OUT, OUT_FEAT):
+    weights = models.ResNet152_Weights.DEFAULT
+    model = models.resnet152(weights=weights).to(device)
+    # Freeze all feture extr. layers
+    for param in model.parameters():
+        #print(param)
+        param.requires_grad = False
+
+    torch.manual_seed(SEED_NUM)
+    torch.cuda.manual_seed(SEED_NUM)
+
+    model.fc = nn.Sequential(
+        nn.Dropout(p=DROP_OUT, inplace=True),
+        nn.Linear(in_features=2048,
+                out_features=OUT_FEAT)).to(device)
+
+    model.name = "ResNet_152"
     print(f"[INFO] Created new {model.name} model.")
 
     return model
