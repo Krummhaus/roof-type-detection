@@ -4,6 +4,7 @@
 # Ignore the roofs folder
 roofs/
 clip4/
+runs/
 __pycache__/
 
 # Ignore files

@@ -1,7 +1,18 @@
 import torch
 import numpy as np
+import torchvision
+from torch.utils.tensorboard import SummaryWriter
 
-def matrix_and_accuracy(model, test_loader, device, OUT_FEAT):
+
+def denormalize_inplace(tensor):
+    """Denormalize a tensor in place."""
+    mean = torch.tensor([0.485, 0.456, 0.406]).unsqueeze(1).unsqueeze(2).to(tensor.device)
+    std = torch.tensor([0.229, 0.224, 0.225]).unsqueeze(1).unsqueeze(2).to(tensor.device)
+    tensor.mul_(std).add_(mean)
+    return tensor
+
+
+def matrix_and_accuracy(model, test_loader, device, OUT_FEAT, class_names, writer):
     # Initialize confusion matrix
     num_classes = OUT_FEAT
     cm = torch.zeros(num_classes, num_classes, dtype=torch.int64)
@@ -36,6 +47,17 @@ def matrix_and_accuracy(model, test_loader, device, OUT_FEAT):
             for i in range(num_classes):
                 class_correct[i] += ((predicted == i) & (labels == i)).sum().item()
                 class_total[i] += (labels == i).sum().item()
+
+            # Save mismatched images to TensorBoard
+            mismatched_indices = (predicted != labels).nonzero()
+            for idx in mismatched_indices:
+                image = inputs[idx].to(device)
+                true_idx = labels[idx].item()
+                true_label = class_names[true_idx]
+                pred_idx = predicted[idx].item()
+                pred_label = class_names[pred_idx]
+                writer.add_image(f"{model.name}Neshoda/{true_label}_predicted_as_{pred_label}", 
+                                 torchvision.utils.make_grid(denormalize_inplace(image)))
     
     # convert torch.tensor to np.array
     cm_np = cm.numpy()

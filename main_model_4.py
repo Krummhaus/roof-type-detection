@@ -1,7 +1,10 @@
 import torch
 from module_4 import data_setup, engine, model_builder, eval_model, plot_data
+from torch.utils.tensorboard import SummaryWriter
+import os
+from datetime import datetime
 
-
+timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
 
 def train_vgg16(NUM_EPOCHS=5,
                 OUT_FEAT=4,
@@ -21,19 +24,27 @@ def train_vgg16(NUM_EPOCHS=5,
                 loss_fn=loss_fn,
                 optimizer=optimizer,
                 epochs=NUM_EPOCHS,
-                device=device)
+                device=device,
+                writer=SummaryWriter(log_dir=os.path.join("runs", timestamp, model.name, setup))
+                )
     
     print(f"[INFO] Evauluating {model.name} model with test data.")
 
     cm, cm_np, all_acc, class_acc, precision, recall, f1_score = eval_model.matrix_and_accuracy(
-        model, test_loader, device, OUT_FEAT)
+        model,
+        test_loader,
+        device,
+        OUT_FEAT,
+        class_names,
+        writer=SummaryWriter(log_dir=os.path.join("runs", timestamp, model.name, setup))
+        )
 
     print(f"[RESULT] Celková přesnost: {all_acc}.")
 
     plot_data.plot_acc_n_loss(results, model.name, setup)
-    plot_data.plot_matrix(classes, cm_np, model.name, all_acc,
+    plot_data.plot_matrix(class_names, cm_np, model.name, all_acc,
                           class_acc, setup)
-    plot_data.plot_textinfo(classes, all_acc, class_acc,
+    plot_data.plot_textinfo(class_names, all_acc, class_acc,
                             precision, recall, f1_score,
                             model.name, setup)
 
@@ -57,20 +68,28 @@ def train_effnetb1(NUM_EPOCHS=5,
                 loss_fn=loss_fn,
                 optimizer=optimizer,
                 epochs=NUM_EPOCHS,
-                device=device)
+                device=device,
+                writer=SummaryWriter(log_dir=os.path.join("runs", timestamp, model.name, setup))
+                )
 
     print(results)
     print(f"[INFO] Evauluating {model.name} model with test data.")
 
     cm, cm_np, all_acc, class_acc, precision, recall, f1_score = eval_model.matrix_and_accuracy(
-        model, test_loader, device, OUT_FEAT)
+        model,
+        test_loader,
+        device,
+        OUT_FEAT,
+        class_names,
+        writer=SummaryWriter(log_dir=os.path.join("runs", timestamp, model.name, setup))
+        )
 
     print(f"[RESULT] Celková přesnost: {all_acc}.")
 
     plot_data.plot_acc_n_loss(results, model.name, setup)
-    plot_data.plot_matrix(classes, cm_np, model.name, all_acc,
+    plot_data.plot_matrix(class_names, cm_np, model.name, all_acc,
                           class_acc, setup)
-    plot_data.plot_textinfo(classes, all_acc, class_acc,
+    plot_data.plot_textinfo(class_names, all_acc, class_acc,
                             precision, recall, f1_score,
                             model.name, setup)
 
@@ -94,25 +113,33 @@ def train_resnet152(NUM_EPOCHS=5,
                 loss_fn=loss_fn,
                 optimizer=optimizer,
                 epochs=NUM_EPOCHS,
-                device=device)
+                device=device,
+                writer=SummaryWriter(log_dir=os.path.join("runs", timestamp, model.name, setup))
+                )
 
     print(f"[INFO] Evauluating {model.name} model with test data.")
 
     cm, cm_np, all_acc, class_acc, precision, recall, f1_score = eval_model.matrix_and_accuracy(
-        model, test_loader, device, OUT_FEAT)
+        model,
+        test_loader,
+        device,
+        OUT_FEAT,
+        class_names,
+        writer=SummaryWriter(log_dir=os.path.join("runs", timestamp, model.name, setup))
+        )
 
     print(f"[RESULT] Celková přesnost: {all_acc}.")
 
     plot_data.plot_acc_n_loss(results, model.name, setup)
-    plot_data.plot_matrix(classes, cm_np, model.name, all_acc,
+    plot_data.plot_matrix(class_names, cm_np, model.name, all_acc,
                           class_acc, setup)
-    plot_data.plot_textinfo(classes, all_acc, class_acc,
+    plot_data.plot_textinfo(class_names, all_acc, class_acc,
                             precision, recall, f1_score,
                             model.name, setup)
 
 def run_experiment_1():
-    drop = [0.0, 0.25]
-    epch = [7, 13]
+    drop = [0.0, 0.15]
+    epch = [7, 21]
     rate = [0.001]
     for dr in drop:
         for ep in epch:
@@ -125,7 +152,6 @@ def run_experiment_1():
 if __name__ == '__main__':
     BATCH_SIZE = 128
     SEED_NUM = 42
-    classes = ['Plochá', 'Valbová', 'Sedlová', 'Komplexní']
 
     # Setup target device
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -134,8 +160,10 @@ if __name__ == '__main__':
     # Data preparation
     data_dir = './clip4'
     train_loader, val_loader, test_loader, class_names = data_setup.create_dataloader(data_dir,BATCH_SIZE, SEED_NUM)
+    # Until i rename /clip4 folder calasses, I must overide
+    class_names = ['Plochá', 'Valbová', 'Sedlová', 'Komplexní']
 
-    #train_effnetb1()
+    train_effnetb1(NUM_EPOCHS=30)
     #train_vgg16()
     #train_resnet152()
-    run_experiment_1()
+    #run_experiment_1()
