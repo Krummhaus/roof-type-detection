@@ -4,6 +4,9 @@
 # Ignore the roofs folder
 roofs/
 clip4/
+clip5/
+clip6/
+clip7/
 runs/
 plots/
 __pycache__/

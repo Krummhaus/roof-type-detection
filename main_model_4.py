@@ -94,7 +94,7 @@ def train_effnetb1(NUM_EPOCHS=5,
                             model.name, setup, timestamp)
 
 
-def train_resnet152(NUM_EPOCHS=5,
+def train_resnet101(NUM_EPOCHS=5,
                 OUT_FEAT=4,
                 DROP_OUT=0.0,
                 LEARNING_RATE=0.001
@@ -102,7 +102,7 @@ def train_resnet152(NUM_EPOCHS=5,
     drop, lr = str(DROP_OUT).split('.')[-1], str(LEARNING_RATE).split('.')[-1]
     setup = f"seed{SEED_NUM}_ep{NUM_EPOCHS}_drop{drop}_lr{lr}"
  
-    model = model_builder.create_resnet152(device, SEED_NUM, DROP_OUT, OUT_FEAT)
+    model = model_builder.create_resnet101(device, SEED_NUM, DROP_OUT, OUT_FEAT)
     # Set loss and optimizer
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(params=model.parameters(),
@@ -139,14 +139,14 @@ def train_resnet152(NUM_EPOCHS=5,
 
 def run_experiment_1():
     drop = [0.0, 0.15]
-    epch = [7, 21]
+    epch = [7, 13]
     rate = [0.001]
     for dr in drop:
         for ep in epch:
             for lr in rate:
                 train_effnetb1(DROP_OUT=dr, NUM_EPOCHS=ep, LEARNING_RATE=lr)
                 train_vgg16(DROP_OUT=dr, NUM_EPOCHS=ep, LEARNING_RATE=lr)
-                train_resnet152(DROP_OUT=dr, NUM_EPOCHS=ep, LEARNING_RATE=lr)
+                train_resnet101(DROP_OUT=dr, NUM_EPOCHS=ep, LEARNING_RATE=lr)
 
 
 if __name__ == '__main__':
@@ -158,12 +158,12 @@ if __name__ == '__main__':
     print(f"{device=}")
 
     # Data preparation
-    data_dir = './clip4'
+    data_dir = './clip7'
     train_loader, val_loader, test_loader, class_names = data_setup.create_dataloader(data_dir,BATCH_SIZE, SEED_NUM)
     # Until i rename /clip4 folder calasses, I must overide
-    class_names = ['Plochá', 'Valbová', 'Sedlová', 'Komplexní']
+    #class_names = ['Plochá', 'Valbová', 'Sedlová', 'Komplexní']
 
-    train_effnetb1(NUM_EPOCHS=1)
-    #train_vgg16()
+    #train_effnetb1(NUM_EPOCHS=5)
+    train_vgg16(NUM_EPOCHS=7)
     #train_resnet152()
     #run_experiment_1()

@@ -105,9 +105,9 @@ def create_effnetb1(device, SEED_NUM, DROP_OUT, OUT_FEAT):
     return model
 
 
-def create_resnet152(device, SEED_NUM, DROP_OUT, OUT_FEAT):
-    weights = models.ResNet152_Weights.DEFAULT
-    model = models.resnet152(weights=weights).to(device)
+def create_resnet101(device, SEED_NUM, DROP_OUT, OUT_FEAT):
+    weights = models.ResNet101_Weights.DEFAULT
+    model = models.resnet101(weights=weights).to(device)
     # Freeze all feture extr. layers
     for param in model.parameters():
         #print(param)
@@ -121,7 +121,7 @@ def create_resnet152(device, SEED_NUM, DROP_OUT, OUT_FEAT):
         nn.Linear(in_features=2048,
                 out_features=OUT_FEAT)).to(device)
 
-    model.name = "ResNet_152"
+    model.name = "ResNet_101"
     print(f"[INFO] Created new {model.name} model.")
 
     return model

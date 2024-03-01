@@ -58,23 +58,25 @@ def plot_acc_n_loss(results, model_name, setup, timestamp):
 
     # Plot loss
     plt.subplot(1, 2, 1)
-    plt.plot(epochs, loss, 'b-', label='train_loss')
-    plt.plot(epochs, test_loss, 'r-', label='test_loss')
+    plt.plot(epochs, loss, 'b-', label='trénovací ztráta')
+    plt.plot(epochs, test_loss, 'r-', label='validační ztráta')
     plt.title('Ztráta')
     plt.xlabel('Počet epoch')
     #plt.xticks(epochs)
-    plt.xticks(range(len(epochs)), [str(epoch) if i % 3 == 0 else '' for i, epoch in enumerate(epochs)])
+    tick_labels = [''] + [str(epoch) if (i + 1) % 3 == 0 else '' for i, epoch in enumerate(epochs)]
+    plt.xticks(range(len(epochs) + 1), tick_labels)
     plt.grid(True)
     plt.legend()
 
     # Plot accuracy
     plt.subplot(1, 2, 2)
-    plt.plot(epochs, accuracy, 'b-', label='train_accuracy')
-    plt.plot(epochs, test_accuracy, 'r-', label='test_accuracy')
+    plt.plot(epochs, accuracy, 'b-', label='trénovací přesnost')
+    plt.plot(epochs, test_accuracy, 'r-', label='validační přesnost')
     plt.title('Přesnost')
     plt.xlabel('Počet epoch')
     #plt.xticks(epochs)
-    plt.xticks(range(len(epochs)), [str(epoch) if i % 3 == 0 else '' for i, epoch in enumerate(epochs)])
+    tick_labels = [''] + [str(epoch) if (i + 1) % 3 == 0 else '' for i, epoch in enumerate(epochs)]
+    plt.xticks(range(len(epochs) + 1), tick_labels)
     plt.legend()
 
     plt.grid(True)
