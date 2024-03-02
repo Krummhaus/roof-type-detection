@@ -9,11 +9,16 @@ timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
 def train_vgg16(NUM_EPOCHS=5,
                 OUT_FEAT=4,
                 DROP_OUT=0.0,
-                LEARNING_RATE=0.001
+                LEARNING_RATE=0.001, freez=True
                 ):
     drop, lr = str(DROP_OUT).split('.')[-1], str(LEARNING_RATE).split('.')[-1]
     setup = f"seed{SEED_NUM}_ep{NUM_EPOCHS}_drop{drop}_lr{lr}"
-    model = model_builder.create_vgg16(device, SEED_NUM, DROP_OUT, OUT_FEAT)
+
+    model = model_builder.create_vgg16(device,
+                                       SEED_NUM,
+                                       DROP_OUT,
+                                       OUT_FEAT,
+                                       freez)
     # Set loss and optimizer
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(params=model.parameters(),
@@ -52,12 +57,16 @@ def train_vgg16(NUM_EPOCHS=5,
 def train_effnetb1(NUM_EPOCHS=5,
                 OUT_FEAT=4,
                 DROP_OUT=0.0,
-                LEARNING_RATE=0.001
+                LEARNING_RATE=0.001, freez=True
                 ):
     drop, lr = str(DROP_OUT).split('.')[-1], str(LEARNING_RATE).split('.')[-1]
     setup = f"seed{SEED_NUM}_ep{NUM_EPOCHS}_drop{drop}_lr{lr}"
  
-    model = model_builder.create_effnetb1(device, SEED_NUM, DROP_OUT, OUT_FEAT)
+    model = model_builder.create_effnetb1(device,
+                                          SEED_NUM,
+                                          DROP_OUT,
+                                          OUT_FEAT,
+                                          freez)
     # Set loss and optimizer
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(params=model.parameters(),
@@ -97,12 +106,16 @@ def train_effnetb1(NUM_EPOCHS=5,
 def train_resnet101(NUM_EPOCHS=5,
                 OUT_FEAT=4,
                 DROP_OUT=0.0,
-                LEARNING_RATE=0.001
+                LEARNING_RATE=0.001, freez=True
                 ):
     drop, lr = str(DROP_OUT).split('.')[-1], str(LEARNING_RATE).split('.')[-1]
     setup = f"seed{SEED_NUM}_ep{NUM_EPOCHS}_drop{drop}_lr{lr}"
  
-    model = model_builder.create_resnet101(device, SEED_NUM, DROP_OUT, OUT_FEAT)
+    model = model_builder.create_resnet101(device,
+                                           SEED_NUM,
+                                           DROP_OUT,
+                                           OUT_FEAT,
+                                           freez)
     # Set loss and optimizer
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(params=model.parameters(),
@@ -138,8 +151,8 @@ def train_resnet101(NUM_EPOCHS=5,
                             model.name, setup, timestamp)
 
 def run_experiment_1():
-    drop = [0.0, 0.15]
-    epch = [7, 13]
+    drop = [0.0, 0.2]
+    epch = [9, 21]
     rate = [0.001]
     for dr in drop:
         for ep in epch:
@@ -150,20 +163,22 @@ def run_experiment_1():
 
 
 if __name__ == '__main__':
-    BATCH_SIZE = 128
-    SEED_NUM = 42
-
     # Setup target device
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"{device=}")
 
-    # Data preparation
-    data_dir = './clip7'
-    train_loader, val_loader, test_loader, class_names = data_setup.create_dataloader(data_dir,BATCH_SIZE, SEED_NUM)
-    # Until i rename /clip4 folder calasses, I must overide
-    #class_names = ['Plochá', 'Valbová', 'Sedlová', 'Komplexní']
+    BATCH_SIZE = 128
+    seeds = [42, 13, 57]
+    for seed in seeds:
+        SEED_NUM = seed
 
-    #train_effnetb1(NUM_EPOCHS=5)
-    train_vgg16(NUM_EPOCHS=7)
-    #train_resnet152()
-    #run_experiment_1()
+    # Data preparation
+        data_dir = './clip7'
+        train_loader, val_loader, test_loader, class_names = data_setup.create_dataloader(data_dir,BATCH_SIZE, SEED_NUM)
+        # Until i rename /clip4 folder calasses, I must overide
+        #class_names = ['Plochá', 'Valbová', 'Sedlová', 'Komplexní']
+
+        #train_effnetb1(NUM_EPOCHS=5)
+        #train_vgg16(NUM_EPOCHS=7, DROP_OUT=0.15, freez=False)
+        #train_resnet152()
+        run_experiment_1()
