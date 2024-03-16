@@ -60,7 +60,7 @@ def plot_acc_n_loss(results, model_name, setup, timestamp):
     plt.subplot(1, 2, 1)
     plt.plot(epochs, loss, 'b-', label='trénovací ztráta')
     plt.plot(epochs, test_loss, 'r-', label='validační ztráta')
-    plt.title('Ztráta')
+    #plt.title('Ztráta')
     plt.xlabel('Počet epoch')
     #plt.xticks(epochs)
     tick_labels = [''] + [str(epoch) if (i + 1) % 3 == 0 else '' for i, epoch in enumerate(epochs)]
@@ -72,7 +72,7 @@ def plot_acc_n_loss(results, model_name, setup, timestamp):
     plt.subplot(1, 2, 2)
     plt.plot(epochs, accuracy, 'b-', label='trénovací přesnost')
     plt.plot(epochs, test_accuracy, 'r-', label='validační přesnost')
-    plt.title('Přesnost')
+    #plt.title('Přesnost')
     plt.xlabel('Počet epoch')
     #plt.xticks(epochs)
     tick_labels = [''] + [str(epoch) if (i + 1) % 3 == 0 else '' for i, epoch in enumerate(epochs)]
